@@ -10,7 +10,7 @@ public class CategoriaCompeticionBD {
 	 *    creando un objeto del tipo model.CategoriaCompeticion
 	 */
 	public static CategoriaCompeticion getById(int categoriaCompeticion) {
-		// TODO: 
+		// TODO: nico huele mal
 		return null;
 	}
 }
