@@ -14,8 +14,21 @@ public class JugadorBD {
 	 * @return
 	 */
 	public static List<Jugador> getAll() {
-		// TODO: Implementar
-		return null;
+		String sqlQuery = "SELECT * FROM jugador;";
+		try {
+			PreparedStatement st = db.AdministradorConexion.prepareStatement(sqlQuery);
+			st.execute();
+			ResultSet rs = st.getResultSet();
+			List<Jugador> listaJugador = new java.util.ArrayList<Jugador>();
+			while (rs.next()) {
+				listaJugador.add(new Jugador(rs.getString(1), rs.getString(2), 
+				rs.getString(3), rs.getString(4),rs.getDate(5).toLocalDate()));
+			}
+			return listaJugador;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	/**
