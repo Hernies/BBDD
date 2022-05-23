@@ -56,7 +56,7 @@ public class CategoriaEdadBD {
 	 * @return Borra de la base de datos la categor�a de edad con id igual al identificador del objeto ce
 	 */
 	public static boolean deleteCategoria(CategoriaEdad ce) {
-		String sqlQuery = "DELETE FROM categoria_edad WHERE id = " + ce.getId();
+		String sqlQuery = "DELETE FROM categoria_edad WHERE id = " + ce.getId() + ";";
 		try {
 			PreparedStatement st = AdministradorConexion.prepareStatement(sqlQuery);
 			st.execute();
