@@ -20,7 +20,7 @@ public class ClubBD {
 		st.execute();
 		ResultSet rs = st.getResultSet();
 		Club ClubBD = new Club(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getInt(4), 
-		rs.getInt(5),rs.getInt(6),rs.getString(7),rs.getString(8),rs.getString(9));
+			rs.getInt(5),rs.getInt(6),rs.getString(7),rs.getString(8),rs.getString(9));
 		st.close();
 		rs.close();
 		return ClubBD;
