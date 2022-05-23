@@ -1,5 +1,8 @@
 package db.map;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import model.Jugador;
@@ -16,14 +19,25 @@ public class JugadorBD {
 	}
 	
 	/**
-	 * Obtiene de la base de datos el jugador con nif igual al parámetro nifJugador, 
+	 * Obtiene de la base de datos el jugador con nif igual al parï¿½metro nifJugador, 
 	 *    creando un objeto del tipo model.Jugador
 	 * @param nifJugador
 	 * @return
 	 */
 	public static Jugador getById(String nifJugador) {
-		// TODO: Implementar
-		return null;
+		String sqlQuery = "SELECT * FROM jugador WHERE nif = '" + nifJugador + "';";
+		try {
+		PreparedStatement st = db.AdministradorConexion.prepareStatement(sqlQuery);
+		st.execute();
+		ResultSet rs = st.getResultSet();
+		Jugador JugadorBD = new Jugador(rs.getString(1), rs.getString(2), 
+			rs.getString(3), rs.getString(4),rs.getDate(5).toLocalDate());
+		return JugadorBD;
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 }

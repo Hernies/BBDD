@@ -10,37 +10,66 @@ import model.CategoriaEdad;
 
 public class CategoriaEdadBD {
 	/**
-	 * Obtiene de la base de datos todas las categoría de edad devolviendo una lista de objetos CategoriaEdad 
+	 * Obtiene de la base de datos todas las categorï¿½a de edad devolviendo una lista de objetos CategoriaEdad 
 	 * @return
 	 */
 	public static List<CategoriaEdad> getAll() {
-		// TODO: Implementar
-		return null;
+		String sqlQuery = "SELECT * FROM categoriaedad;";
+		try {
+			PreparedStatement st = AdministradorConexion.prepareStatement(sqlQuery);
+			st.execute();
+			ResultSet rs = st.getResultSet();
+			List<CategoriaEdad> listaCategoriaEdad = new java.util.ArrayList<CategoriaEdad>();
+			while (rs.next()) {
+				listaCategoriaEdad.add(new CategoriaEdad(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5)));
+			}
+			return listaCategoriaEdad;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
 	 * 
 	 * @param categoriaEdad
-	 * @return Obtiene de la base de datos la categoría de edad con id igual al parámetro categoriaEdad, 
+	 * @return Obtiene de la base de datos la categorï¿½a de edad con id igual al parï¿½metro categoriaEdad, 
 	 *    creando un objeto del tipo model.CategoriaEdad
 	 */
 	public static CategoriaEdad getById(int categoriaEdad) {
-		// TODO: Implementar
-		return null;
+		String sqlQuery = "SELECT * FROM categoria_edad WHERE id = " + categoriaEdad + ";";
+		try {
+			PreparedStatement st = AdministradorConexion.prepareStatement(sqlQuery);
+			st.execute();
+			ResultSet rs = st.getResultSet();
+			CategoriaEdad CategoriaEdadBD = new CategoriaEdad(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5));
+			return CategoriaEdadBD;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
 	 * 
 	 * @param ce
-	 * @return Borra de la base de datos la categoría de edad con id igual al identificador del objeto ce
+	 * @return Borra de la base de datos la categorï¿½a de edad con id igual al identificador del objeto ce
 	 */
 	public static boolean deleteCategoria(CategoriaEdad ce) {
-		// TODO: Implementar
-		return false;
+		String sqlQuery = "DELETE FROM categoria_edad WHERE id = " + ce.getId();
+		try {
+			PreparedStatement st = AdministradorConexion.prepareStatement(sqlQuery);
+			st.execute();
+			st.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	/**
-	 * Este método guarda en la base de datos (actualiza o crea) los objetos del tipo CategoriaEdad que recibe en
+	 * Este mï¿½todo guarda en la base de datos (actualiza o crea) los objetos del tipo CategoriaEdad que recibe en
 	 * la lista data
 	 * Si el objeto CategoriaEdad tiene id igual a -1 (se ha creado en Java) se realiza un insert y se actualiza el
 	 * id en el objeto
