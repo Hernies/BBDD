@@ -1,6 +1,5 @@
 package model;
 
-import java.sql.SQLException;
 
 import db.map.CategoriaCompeticionBD;
 import db.map.CategoriaEdadBD;
@@ -13,7 +12,7 @@ public class Equipo {
 	private CategoriaEdad categoriaEdad;
 	private CategoriaCompeticion categoriaCompeticion;
 	public Equipo(String licencia, String nombre, int telefono, String nombreClub, int categoriaEdad,
-			int categoriaCompeticion) throws SQLException {
+			int categoriaCompeticion) {
 		super();
 		this.licencia = licencia;
 		this.nombre = nombre;
