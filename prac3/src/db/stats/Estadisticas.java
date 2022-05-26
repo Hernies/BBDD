@@ -17,7 +17,7 @@ public class Estadisticas {
 	 * @return
 	 */
 	public static List<Jugador> getJugadoresNoHanEstadoEnEquipo(int anio){
-		String sqlQuery = "SELECT * FROM jugador WHERE nif NOT IN (SELECT nif FROM jugador_equipo WHERE anio = " + anio + ");";
+		String sqlQuery = "SELECT * FROM jugador WHERE nif IN (SELECT nif_jugador FROM jugador_milita_equipo WHERE fecha_inicio > CAST('"+ anio +"-12-31' AS date) OR fecha_fin < CAST('"+anio+"-01-01' AS date));";
 		try {
 			PreparedStatement st = db.AdministradorConexion.prepareStatement(sqlQuery);
 			st.execute();
@@ -27,6 +27,8 @@ public class Estadisticas {
 				Jugador jugador = new Jugador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getDate(5).toLocalDate());
 				jugadores.add(jugador);
 			}
+			st.close();
+			rs.close();
 			return jugadores;
 		}
 		catch (SQLException e) {
@@ -60,7 +62,8 @@ public class Estadisticas {
 	 * @return
 	 */
 	public static List<Jugador> getJugadoresMasEquiposMismoClub(){
-		String sqlQuery = "SELECT * FROM jugador j WHERE j.nif IN (MAX(SELECT nif FROM jugador_equipo WHERE id_equipo = e.id));";
+		//TODO arreglar query
+		String sqlQuery = "ELECT MAX(Total) FROM (SELECT COUNT(*) AS Total FROM (club INNER JOIN equipo ON club.nombre = equipo.nombre_club INNER JOIN jugador_milita_equipo ON equipo.licencia = jugador_milita_equipo.licencia_equipo) GROUP BY jugador_milita_equipo.nif_jugador) AS Results;";
 		try {
 			PreparedStatement st = db.AdministradorConexion.prepareStatement(sqlQuery);
 			st.execute();
@@ -70,6 +73,8 @@ public class Estadisticas {
 				Jugador jugador = new Jugador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getDate(5).toLocalDate());
 				jugadores.add(jugador);
 			}
+			st.close();
+			rs.close();
 			return jugadores;
 		}
 		catch (SQLException e) {

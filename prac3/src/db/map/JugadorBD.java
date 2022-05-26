@@ -24,6 +24,8 @@ public class JugadorBD {
 				listaJugador.add(new Jugador(rs.getString(1), rs.getString(2), 
 				rs.getString(3), rs.getString(4),rs.getDate(5).toLocalDate()));
 			}
+			st.close();
+			rs.close();
 			return listaJugador;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -45,6 +47,8 @@ public class JugadorBD {
 		ResultSet rs = st.getResultSet();
 		Jugador JugadorBD = new Jugador(rs.getString(1), rs.getString(2), 
 			rs.getString(3), rs.getString(4),rs.getDate(5).toLocalDate());
+		st.close();
+		rs.close();
 		return JugadorBD;
 		}
 		catch (SQLException e) {

@@ -23,6 +23,8 @@ public class CategoriaEdadBD {
 			while (rs.next()) {
 				listaCategoriaEdad.add(new CategoriaEdad(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5)));
 			}
+			st.close();
+			rs.close();
 			return listaCategoriaEdad;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -43,6 +45,8 @@ public class CategoriaEdadBD {
 			st.execute();
 			ResultSet rs = st.getResultSet();
 			CategoriaEdad CategoriaEdadBD = new CategoriaEdad(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5));
+			st.close();
+			rs.close();
 			return CategoriaEdadBD;
 		} catch (SQLException e) {
 			e.printStackTrace();

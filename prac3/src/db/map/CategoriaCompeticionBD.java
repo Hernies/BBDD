@@ -15,7 +15,7 @@ public class CategoriaCompeticionBD {
 	 *    creando un objeto del tipo model.CategoriaCompeticion
 	 * @throws SQLException
 	 */
-	public static CategoriaCompeticion getById(int categoriaCompeticion) {
+	public static CategoriaCompeticion getById(int categoriaCompeticion) throws SQLException{
 		//abrir conexión a base de datos usando jdbc
 		//obtener una categoría de competición de la base de datos
 		//cerrar conexión a base de datos
@@ -30,8 +30,7 @@ public class CategoriaCompeticionBD {
 		rs.close();
 		return categoriaCompeticionBD;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+			throw new SQLException("Error al obtener la categoría de competición de la base de datos");
 		}
 	}
 }
