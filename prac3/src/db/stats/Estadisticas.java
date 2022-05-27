@@ -76,8 +76,8 @@ public class Estadisticas {
 	 * @return
 	 */
 	public static List<Jugador> getJugadoresMasEquiposMismoClub(){
-		//TODO arreglar query
-		String sqlQuery = "ELECT MAX(Total) FROM (SELECT COUNT(*) AS Total FROM (club INNER JOIN equipo ON club.nombre = equipo.nombre_club INNER JOIN jugador_milita_equipo ON equipo.licencia = jugador_milita_equipo.licencia_equipo) GROUP BY jugador_milita_equipo.nif_jugador) AS Results;";
+		//somos conscientes de que el query no funciona porque no se puede hacer un group by con una funcion
+		String sqlQuery = "SELECT nif_jugador FROM jugador_milita_equipo WHERE((SELECT COUNT(*) AS total , jugador_milita_equipo.nif_jugador AS nif FROM (club INNER JOIN equipo ON club.nombre = equipo.nombre_club INNER JOIN jugador_milita_equipo ON equipo.licencia = jugador_milita_equipo.licencia_equipo) GROUP BY jugador_milita_equipo.nif_jugador) = (SELECT MAX(Total) FROM (SELECT COUNT(*) AS Total FROM (club INNER JOIN equipo ON club.nombre = equipo.nombre_club INNER JOIN jugador_milita_equipo ON equipo.licencia = jugador_milita_equipo.licencia_equipo) GROUP BY jugador_milita_equipo.nif_jugador) AS Results));";
 		PreparedStatement st = null;
 		try {
 			st = db.AdministradorConexion.prepareStatement(sqlQuery);
