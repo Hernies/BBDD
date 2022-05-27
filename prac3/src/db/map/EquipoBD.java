@@ -15,17 +15,25 @@ public class EquipoBD {
 	 */
 	public static Equipo getById(String licenciaEquipo) {
 		String sqlQuery = "SELECT * FROM equipo WHERE licencia = '" + licenciaEquipo + "';";
+		PreparedStatement st = null;
+		Equipo EquipoBD = null;
 		try {
-		PreparedStatement st = db.AdministradorConexion.prepareStatement(sqlQuery);
+		st = db.AdministradorConexion.prepareStatement(sqlQuery);
 		st.execute();
 		ResultSet rs = st.getResultSet();
-		Equipo EquipoBD = new Equipo(rs.getString(1), rs.getString(2), rs.getInt(3), 
+		
+		if (rs.next())
+		EquipoBD = new Equipo(rs.getString(1), rs.getString(2), rs.getInt(3), 
 			rs.getString(4),rs.getInt(5),rs.getInt(6));
-		st.close();
-		rs.close();
 		return EquipoBD;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			try{
+				if(st != null && !st.isClosed()){
+					st.close();
+				}
+			} catch (SQLException e2){
+				e2.printStackTrace();
+			}		
 			return null;
 		}
 	}

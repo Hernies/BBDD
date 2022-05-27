@@ -15,24 +15,31 @@ public class JugadorBD {
 	 */
 	public static List<Jugador> getAll() {
 		String sqlQuery = "SELECT * FROM jugador;";
+		PreparedStatement st = null;
 		try {
-			PreparedStatement st = db.AdministradorConexion.prepareStatement(sqlQuery);
+			st = db.AdministradorConexion.prepareStatement(sqlQuery);
 			st.execute();
 			ResultSet rs = st.getResultSet();
 			List<Jugador> listaJugador = new java.util.ArrayList<Jugador>();
 			while (rs.next()) {
 				listaJugador.add(new Jugador(rs.getString(1), rs.getString(2), 
 				rs.getString(3), rs.getString(4),rs.getDate(5).toLocalDate()));
+		
 			}
-			st.close();
-			rs.close();
 			return listaJugador;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+		}
+		 catch (SQLException e) {
+			try{
+				if(st != null && !st.isClosed()){
+					st.close();
+				}
+			} catch (SQLException e2){
+				e2.printStackTrace();
+			}
+			throw new RuntimeException("Error al obtener los jugadores de la base de datos");
 		}
 	}
-	
+
 	/**
 	 * Obtiene de la base de datos el jugador con nif igual al par�metro nifJugador, 
 	 *    creando un objeto del tipo model.Jugador
@@ -41,20 +48,27 @@ public class JugadorBD {
 	 */
 	public static Jugador getById(String nifJugador) {
 		String sqlQuery = "SELECT * FROM jugador WHERE nif = '" + nifJugador + "';";
+		PreparedStatement st = null;
 		try {
-		PreparedStatement st = db.AdministradorConexion.prepareStatement(sqlQuery);
-		st.execute();
-		ResultSet rs = st.getResultSet();
-		Jugador JugadorBD = new Jugador(rs.getString(1), rs.getString(2), 
+			st = db.AdministradorConexion.prepareStatement(sqlQuery);
+			st.execute();
+			ResultSet rs = st.getResultSet();
+			Jugador jugador = null;
+			if(rs.next())
+			jugador = new Jugador(rs.getString(1), rs.getString(2), 
 			rs.getString(3), rs.getString(4),rs.getDate(5).toLocalDate());
-		st.close();
-		rs.close();
-		return JugadorBD;
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+			return jugador;
+		} catch (SQLException e) {
+			try {
+				if(st != null && !st.isClosed()){
+					st.close();
+				}
+			} catch (SQLException e2){
+				e2.printStackTrace();
+			}
+			throw new RuntimeException("Error al obtener el jugador de la base de datos");
 		}
 	}
-	
 }
+
+

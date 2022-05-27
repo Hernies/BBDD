@@ -18,22 +18,27 @@ public class Estadisticas {
 	 */
 	public static List<Jugador> getJugadoresNoHanEstadoEnEquipo(int anio){
 		String sqlQuery = "SELECT * FROM jugador WHERE nif IN (SELECT nif_jugador FROM jugador_milita_equipo WHERE fecha_inicio > CAST('"+ anio +"-12-31' AS date) OR fecha_fin < CAST('"+anio+"-01-01' AS date));";
+		PreparedStatement st = null;
 		try {
-			PreparedStatement st = db.AdministradorConexion.prepareStatement(sqlQuery);
+			st = db.AdministradorConexion.prepareStatement(sqlQuery);
 			st.execute();
 			ResultSet rs = st.getResultSet();
-			List<Jugador> jugadores = new ArrayList<Jugador>();
+			List<Jugador> listaJugador = new ArrayList<Jugador>();
 			while (rs.next()) {
-				Jugador jugador = new Jugador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getDate(5).toLocalDate());
-				jugadores.add(jugador);
+				listaJugador.add(new Jugador(rs.getString(1), rs.getString(2), 
+				rs.getString(3), rs.getString(4),rs.getDate(5).toLocalDate()));
 			}
-			st.close();
-			rs.close();
-			return jugadores;
+			return listaJugador;
 		}
-		catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+		 catch (SQLException e) {
+			try{
+				if(st != null && !st.isClosed()){
+					st.close();
+				}
+			} catch (SQLException e2){
+				e2.printStackTrace();
+			}
+			throw new RuntimeException("Error al obtener los jugadores de la base de datos");
 		}
 	}
 	
@@ -42,17 +47,26 @@ public class Estadisticas {
 	 * @return
 	 */
 	public static int getNumeroMaximoEquiposDelMismoClubHaEstadoUnJugador(){
-		String sqlQuery = "SELECT MAX(COUNT(DISTINCT(e.id))) FROM equipo e, jugador_equipo j WHERE e.id = j.id_equipo;";
+		String sqlQuery = "SELECT MAX(COUNT(DISTINCT(e.id))) FROM equipo e, jugador_milita_equipo j WHERE e.licencia = j.licencia_equipo;"; // NO FUNCIONA Error Code: 1111. Invalid use of group function
+		PreparedStatement st = null;
 		try {
-			PreparedStatement st = db.AdministradorConexion.prepareStatement(sqlQuery);
+			st = db.AdministradorConexion.prepareStatement(sqlQuery);
 			st.execute();
 			ResultSet rs = st.getResultSet();
-			rs.next();
-			return rs.getInt(1);
+			if (rs.next()) {
+				return rs.getInt(1);
+			}
+			return 0;
 		}
-		catch (SQLException e) {
-			e.printStackTrace();
-			return -1;
+		 catch (SQLException e) {
+			try{
+				if(st != null && !st.isClosed()){
+					st.close();
+				}
+			} catch (SQLException e2){
+				e2.printStackTrace();
+			}
+			throw new RuntimeException("Error al obtener los jugadores de la base de datos");
 		}
 	}
 	
@@ -64,22 +78,27 @@ public class Estadisticas {
 	public static List<Jugador> getJugadoresMasEquiposMismoClub(){
 		//TODO arreglar query
 		String sqlQuery = "ELECT MAX(Total) FROM (SELECT COUNT(*) AS Total FROM (club INNER JOIN equipo ON club.nombre = equipo.nombre_club INNER JOIN jugador_milita_equipo ON equipo.licencia = jugador_milita_equipo.licencia_equipo) GROUP BY jugador_milita_equipo.nif_jugador) AS Results;";
+		PreparedStatement st = null;
 		try {
-			PreparedStatement st = db.AdministradorConexion.prepareStatement(sqlQuery);
+			st = db.AdministradorConexion.prepareStatement(sqlQuery);
 			st.execute();
 			ResultSet rs = st.getResultSet();
-			List<Jugador> jugadores = new ArrayList<Jugador>();
+			List<Jugador> listaJugador = new ArrayList<Jugador>();
 			while (rs.next()) {
-				Jugador jugador = new Jugador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getDate(5).toLocalDate());
-				jugadores.add(jugador);
+				listaJugador.add(new Jugador(rs.getString(1), rs.getString(2), 
+				rs.getString(3), rs.getString(4),rs.getDate(5).toLocalDate()));
 			}
-			st.close();
-			rs.close();
-			return jugadores;
+			return listaJugador;
 		}
-		catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+		 catch (SQLException e) {
+			try{
+				if(st != null && !st.isClosed()){
+					st.close();
+				}
+			} catch (SQLException e2){
+				e2.printStackTrace();
+			}
+			throw new RuntimeException("Error al obtener los jugadores de la base de datos");
 		}
 	}
 
@@ -91,21 +110,28 @@ public class Estadisticas {
 	 * @return
 	 */
 	public static List<Jugador> getJugadoresEquipoAnio(Equipo equipo, int anio) {
-		String sqlQuery = "SELECT * FROM jugador j WHERE j.nif IN (SELECT nif FROM jugador_equipo WHERE licencia_equipo = " + equipo.getLicencia() + " AND anio = " + anio + ");";
+		String sqlQuery = "SELECT * FROM jugador j WHERE j.nif IN (SELECT nif_jugador FROM jugador_milita_equipo WHERE licencia_equipo = " + equipo.getLicencia() + " AND fecha_inicio > CAST('"+ anio +"-12-31' AS date) OR fecha_fin < CAST('"+anio+"-01-01' AS date));";
+		PreparedStatement st = null;
 		try {
-			PreparedStatement st = db.AdministradorConexion.prepareStatement(sqlQuery);
+			st = db.AdministradorConexion.prepareStatement(sqlQuery);
 			st.execute();
 			ResultSet rs = st.getResultSet();
-			List<Jugador> jugadores = new ArrayList<Jugador>();
+			List<Jugador> listaJugador = new ArrayList<Jugador>();
 			while (rs.next()) {
-				Jugador jugador = new Jugador(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getDate(5).toLocalDate());
-				jugadores.add(jugador);
+				listaJugador.add(new Jugador(rs.getString(1), rs.getString(2), 
+				rs.getString(3), rs.getString(4),rs.getDate(5).toLocalDate()));
 			}
-			return jugadores;
+			return listaJugador;
 		}
-		catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+		 catch (SQLException e) {
+			try{
+				if(st != null && !st.isClosed()){
+					st.close();
+				}
+			} catch (SQLException e2){
+				e2.printStackTrace();
+			}
+			throw new RuntimeException("Error al obtener los jugadores de la base de datos");
 		}
 	}
 }

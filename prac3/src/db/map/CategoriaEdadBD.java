@@ -14,21 +14,26 @@ public class CategoriaEdadBD {
 	 * @return
 	 */
 	public static List<CategoriaEdad> getAll() {
-		String sqlQuery = "SELECT * FROM categoriaedad;";
+		String sqlQuery = "SELECT * FROM categoria_edad;";
+		PreparedStatement st = null;
 		try {
-			PreparedStatement st = AdministradorConexion.prepareStatement(sqlQuery);
+			st = AdministradorConexion.prepareStatement(sqlQuery);
 			st.execute();
 			ResultSet rs = st.getResultSet();
 			List<CategoriaEdad> listaCategoriaEdad = new java.util.ArrayList<CategoriaEdad>();
 			while (rs.next()) {
 				listaCategoriaEdad.add(new CategoriaEdad(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5)));
 			}
-			st.close();
-			rs.close();
 			return listaCategoriaEdad;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+			try{
+				if(st != null && !st.isClosed()){
+					st.close();
+				}
+			} catch (SQLException e2){
+				e2.printStackTrace();
+			}
+			throw new RuntimeException("Error al obtener las categorías de edad de la base de datos");
 		}
 	}
 
@@ -40,17 +45,24 @@ public class CategoriaEdadBD {
 	 */
 	public static CategoriaEdad getById(int categoriaEdad) {
 		String sqlQuery = "SELECT * FROM categoria_edad WHERE id = " + categoriaEdad + ";";
+		PreparedStatement st = null;
 		try {
-			PreparedStatement st = AdministradorConexion.prepareStatement(sqlQuery);
+			st = AdministradorConexion.prepareStatement(sqlQuery);
 			st.execute();
 			ResultSet rs = st.getResultSet();
-			CategoriaEdad CategoriaEdadBD = new CategoriaEdad(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5));
-			st.close();
-			rs.close();
-			return CategoriaEdadBD;
+			CategoriaEdad ce = null;
+			if(rs.next())
+			ce = new CategoriaEdad(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5));
+			return ce;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+			try {
+				if(st != null && !st.isClosed()){
+					st.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
+			throw new RuntimeException("Error al obtener la categoría de edad de la base de datos");
 		}
 	}
 
@@ -61,14 +73,20 @@ public class CategoriaEdadBD {
 	 */
 	public static boolean deleteCategoria(CategoriaEdad ce) {
 		String sqlQuery = "DELETE FROM categoria_edad WHERE id = " + ce.getId() + ";";
+		PreparedStatement st = null;
 		try {
-			PreparedStatement st = AdministradorConexion.prepareStatement(sqlQuery);
+			st = AdministradorConexion.prepareStatement(sqlQuery);
 			st.execute();
-			st.close();
 			return true;
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+			try {
+				if(st != null && !st.isClosed()){
+					st.close();
+				}
+			} catch (SQLException e2) {
+				e2.printStackTrace();
+			}
+			throw new RuntimeException("Error al borrar la categoría de edad de la base de datos");
 		}
 	}
 	
